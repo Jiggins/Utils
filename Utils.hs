@@ -205,6 +205,7 @@ remove x = filter (/=x)
 removeDuplicates :: Ord a => [a] -> [a]
 removeDuplicates = map head . group . sort
 
+-- | Does not sort the list but as a drawback it runs in O(n^2).
 removeDuplicatesEq :: Eq a => [a] -> [a]
 removeDuplicatesEq (x:xs) = rem xs [x]
     where rem [] list     = list
