@@ -14,13 +14,17 @@ data Tree a = Node a Colour (Tree a) (Tree a)
 instance Ord a => Ord (Tree a) where
     compare = compare `on` value
 
+instance Functor Tree where
+    fmap _ Empty = Empty
+    fmap f (Node x c left right) = Node (f x) c (fmap f left) (fmap f right) 
+
 {- * Accessors -}
 
-left :: Ord a => Tree a -> Tree a
-left (Node _ _ left _) = left
+getLeft :: Ord a => Tree a -> Tree a
+getLeft (Node _ _ left _) = left
 
-right :: Ord a => Tree a -> Tree a
-right (Node _ _ _ right) = right
+getRight :: Ord a => Tree a -> Tree a
+getRight (Node _ _ _ right) = right
 
 value :: Ord a => Tree a -> a
 value (Node value _ _ _) = value
@@ -52,12 +56,22 @@ makeBlack (Node x _ left right) = Node x Black left right
 
 {- * Insertions -}
 
-insertVal :: Ord a => a -> Tree a -> Tree a
-insertVal = insert . node
+insert :: Ord a => a -> Tree a -> Tree a
+insert node Empty = Node node Red Empty Empty
+insert node (Node a c left right) = 
+    case node `compare` a of
+        LT -> Node a Red (insert node left) right
+        GT -> Node a Red left (insert node right)
+        EQ -> Node a c left right
 
-insert :: Ord a => Tree a -> Tree a -> Tree a
-insert new Empty = new
-insert new tree
-    | value new > value tree = insert new (right tree)
-    | value new < value tree = insert new (left tree)
-    | otherwise = tree -- Empty tree becomes the new tree
+search :: Ord a => a -> Tree a -> Maybe a
+search _ Empty = Nothing
+search x tree = case x `compare` value tree of
+    LT -> search x (getLeft tree)
+    EQ -> Just x
+    GT -> search x (getRight tree)
+
+main = do
+    let tree = Empty
+    print . insert 3 . insert 5 . insert 2 . insert 4 $ tree
+    print Red
