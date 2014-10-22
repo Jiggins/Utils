@@ -18,6 +18,15 @@ instance Num Time where
     signum = tmap signum
     fromInteger s = Time 0 0 s
 
+instance Ord Time where
+  Time h m s `compare` Time a b c = case h `compare` a of
+    LT -> LT
+    GT -> GT
+    EQ -> case m `compare` b of
+      LT -> LT
+      GT -> GT
+      EQ -> s `compare` c
+
 (+:) t s = t + time 0 0 s
 (+::) t m = t + time 0 m 0
 (+:::) t h = t + time h 0 0
@@ -31,7 +40,7 @@ fromTuple (h,m,s) = Time h m s
 process :: Time -> Time
 process = fromTuple . fixHours . fixMinutes . toTuple
     where fixMinutes (h,m,s) = (h, m + s `div` 60, s `mod` 60)
-          fixHours   (h,m,s) = (h + m `div` 60, m `mod` 60, s)
+          fixHours   (h,m,s) = ((h + m `div` 60) `mod` 24, m `mod` 60, s)
 
 showTime :: Time -> String
 showTime t = intercalate ":" . map (addZero . ($ t)) $ [hour, minute, second]
@@ -41,6 +50,3 @@ addZero x | x < 10 = '0' : show x
           | otherwise = show x
 
 time = Time
-
-main = do
-    print $ time 1 59 61
