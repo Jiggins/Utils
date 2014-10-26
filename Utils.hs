@@ -105,19 +105,19 @@ triangleNumbers = zipWith ((`div` 2) .: (*)) [1..] [2..]
 
 {- * Prime numbers and factorisation -}
 
-primes :: Integral a => [a]
+primes :: [Integer]
 primes = 2 : [x | x <- [3,5..], 
     and [x `mod` y /= 0 | y <- takeWhile (<= squareRoot x) primes]]
 
-primesBetween :: Integral a => a -> a -> [a]
+primesBetween :: Integer -> Integer -> [Integer]
 primesBetween low high = dropWhile (<= low) $ takeWhile (<= high) primes
 
-primeFactors :: Integral a => a -> [a]
+primeFactors :: Integer -> [Integer]
 primeFactors n | n <= 1 = []
                | otherwise = factor : primeFactors (n `div` factor)
                    where factor = head [x | x <- primes, n `mod` x == 0]
 
-primeFactorPairs :: Integral a => a -> [(a, Int)]
+primeFactorPairs :: Integer -> [(Integer, Int)]
 primeFactorPairs = frequencies . primeFactors
 
 isCoPrime :: (Integral a) => a -> a -> Bool
@@ -127,22 +127,22 @@ isPrime :: Integer -> Bool
 isPrime n | n > 1 = primeFactors n == [n]
           | otherwise = False
 
-factors :: Integral a => a -> [a]
+factors :: Integer -> [Integer]
 factors = removeDuplicates . map product . powerSet . primeFactors
 
-factorPairs :: Integral a => a -> [(a, a)]
+factorPairs :: Integer -> [(Integer, Integer)]
 factorPairs n = zip (factors n) (reverse $ factors n)
 
-numberOfFactors :: Integral a => a -> Int
+numberOfFactors :: Integer -> Int
 numberOfFactors = product . map (\x -> 1 + snd x) . primeFactorPairs
 
-showPrimeFactors :: (Integral a, Show a) => a -> String
+showPrimeFactors :: Integer -> String
 showPrimeFactors = concat . shw . primeFactorPairs
     where shw (x:xs) = concat (tail (sumPowers x) : map sumPowers xs)
           sumPowers x = [" + ", show $ fst x, "^", show $ snd x]
 
 -- | Euler's totient function
-totient :: Integral a => a -> a
+totient :: Integer -> Integer
 totient = product . map (\(p,m) -> (p - 1) * p ^ (m-1)) . primeFactorPairs
 
 --------------------------------------------------------------------------------
