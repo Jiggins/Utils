@@ -160,8 +160,8 @@ letterFrequency xs = [(x,c) | x <- ['.'..'z'],
 
 {- * Lists - Numbers -}
 
-avg :: Fractional a => [a] -> a
-avg xs = sum xs / fromIntegral (length xs)
+avg :: (Real a, Fractional b) => [a] -> b
+avg xs = realToFrac (sum xs) / genericLength xs
 
 digits :: Integer -> [Integer]
 digits = toBaseList 10
