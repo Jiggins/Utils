@@ -5,6 +5,7 @@ import IO.Text
 
 import Control.Monad
 import Data.List
+import Data.List.Split
 import System.CPUTime
 import Text.Printf
 --import Text.Regex (mkRegex, subRegex)
@@ -17,7 +18,7 @@ type Binary  = Integer
 -- | Function composition composition.  Composes a one arity frnction with a
 -- two arity.
 -- Often called the 'titty operator'.
-(.:) :: (b -> c) -> (a -> a1 -> b) -> a -> a1 -> c 
+(.:) :: (b -> c) -> (a -> a1 -> b) -> a -> a1 -> c
 (.:) = (.) . (.)
 
 apply :: (a -> b) -> (a, a) -> (b, b)
@@ -39,7 +40,7 @@ factorial :: (Enum a, Num a) => a -> a
 factorial n =  product [1..n]
 
 goldbachConjecture :: Integer -> (Integer, Integer)
-goldbachConjecture x = (x - head con, head con) 
+goldbachConjecture x = (x - head con, head con)
     where con = filter isPrime . map (x-) . takeWhile (<x) $ tail primes
 
 numLength :: Double -> Integer
@@ -64,7 +65,7 @@ binaryZeros n = replicate r 0 ++ (toBaseList 2) n
 
 binListToDec :: [Binary] -> Decimal
 binListToDec [] = 0
-binListToDec (x:xs) 
+binListToDec (x:xs)
     | x == 1 = 2 ^ length xs  + binListToDec xs
     | x == 0 = binListToDec xs
 
@@ -106,8 +107,8 @@ triangleNumbers = zipWith ((`div` 2) .: (*)) [1..] [2..]
 {- * Prime numbers and factorisation -}
 
 primes :: [Integer]
-primes = 2 : [x | x <- [3,5..], 
-    and [x `mod` y /= 0 | y <- takeWhile (<= squareRoot x) primes]]
+primes = 2 : [x | x <- [3,5..],
+  and [x `mod` y /= 0 | y <- takeWhile (<= squareRoot x) primes]]
 
 primesBetween :: Integer -> Integer -> [Integer]
 primesBetween low high = dropWhile (<= low) $ takeWhile (<= high) primes
@@ -150,8 +151,11 @@ totient = product . map (\(p,m) -> (p - 1) * p ^ (m-1)) . primeFactorPairs
 {- * Strings -}
 
 letterFrequency :: String -> [(Char,Int)]
-letterFrequency xs = [(x,c) | x <- ['.'..'z'], 
+letterFrequency xs = [(x,c) | x <- ['.'..'z'],
     let c = length $ filter (x ==) xs, c > 0]
+
+splitOnLines :: String -> String
+splitOnLines = unlines . map (unlines . lines) . splitOn "\n\n"
 
 --trim :: String -> String
 --trim str = dropWhile (==' ') $ subRegex (mkRegex "[ |,]+$") str ""
@@ -216,11 +220,15 @@ showDuplicates :: Ord a => [a] -> [a]
 showDuplicates = concat . filter (\x -> length x > 1) . group . sort
 
 showDuplicatePairs :: Ord a => [a] -> [(a,Int)]
-showDuplicatePairs = map (\x -> (head x, length x)) 
+showDuplicatePairs = map (\x -> (head x, length x))
     . filter (\x -> length x > 1) . group . sort
 
 slice :: Int -> Int -> [a] -> [a]
 slice from to = take (to - from + 1) . drop (from - 1)
+
+splitInto :: Int -> [a] -> [[a]]
+splitInto _ [] = []
+splitInto n xs = take n xs : (splitTo n $ drop n xs)
 
 subset :: Eq a => [a] -> [a] -> Bool
 subset xs ys = all (`elem` ys) xs
