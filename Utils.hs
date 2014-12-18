@@ -228,7 +228,7 @@ slice from to = take (to - from + 1) . drop (from - 1)
 
 splitInto :: Int -> [a] -> [[a]]
 splitInto _ [] = []
-splitInto n xs = take n xs : (splitTo n $ drop n xs)
+splitInto n xs = take n xs : (splitInto n $ drop n xs)
 
 subset :: Eq a => [a] -> [a] -> Bool
 subset xs ys = all (`elem` ys) xs
