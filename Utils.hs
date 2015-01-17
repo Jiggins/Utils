@@ -4,6 +4,7 @@ import IO
 import IO.Text
 
 import Control.Monad
+import Data.Default
 import Data.List
 import Data.List.Split
 import System.CPUTime
@@ -232,6 +233,12 @@ splitInto n xs = take n xs : (splitInto n $ drop n xs)
 
 subset :: Eq a => [a] -> [a] -> Bool
 subset xs ys = all (`elem` ys) xs
+
+zipWithDef :: (Default a, Default b) => (a -> b -> c) -> [a] -> [b] -> [c]
+zipWithDef _ [] []         = []
+zipWithDef f (x:xs) []     = f x def : zipWithDef f xs []
+zipWithDef f [] (x:xs)     = f def x : zipWithDef f [] xs
+zipWithDef f (x:xs) (y:ys) = f x y   : zipWithDef f xs ys
 
 --------------------------------------------------------------------------------
 
