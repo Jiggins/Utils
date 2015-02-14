@@ -55,6 +55,8 @@ delta, ratio :: Int
 delta = 3
 ratio = 2
 
+showTree (Tree a c s left right) = show a ++ "\n" ++ (showTree left) ++ "\t" ++ (showTree right)
+
 balance :: a -> Count -> Set a -> Set a -> Set a
 balance x c l r
     | sizeL + sizeR <= 1   = Tree x sizeX c l r

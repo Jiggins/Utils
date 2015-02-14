@@ -1,7 +1,7 @@
 module Utils where
 
-import IO
-import IO.Text
+--import Utils.IO
+--import Utils.IO.Text
 
 import Control.Monad
 import Data.Default
@@ -16,11 +16,13 @@ type Binary  = Integer
 
 {- * Basic Functions -}
 
--- | Function composition composition.  Composes a one arity frnction with a
+-- | Function composition composition.  Composes a one arity function with a
 -- two arity.
 -- Often called the 'titty operator'.
 (.:) :: (b -> c) -> (a -> a1 -> b) -> a -> a1 -> c
 (.:) = (.) . (.)
+
+infixr 9 .:
 
 apply :: (a -> b) -> (a, a) -> (b, b)
 apply f (a, b) = (f a, f b)
@@ -35,17 +37,21 @@ chose n r = factorial n `div` factorial r * factorial (n-r)
 digitsSum :: Integral a => a -> a
 digitsSum 0 = 0
 digitsSum x = r + digitsSum q
-    where (q,r) = quotRem x 10
+  where (q,r) = quotRem x 10
 
 factorial :: (Enum a, Num a) => a -> a
-factorial n =  product [1..n]
+factorial n = product [1..n]
 
 goldbachConjecture :: Integer -> (Integer, Integer)
 goldbachConjecture x = (x - head con, head con)
-    where con = filter isPrime . map (x-) . takeWhile (<x) $ tail primes
+  where con = filter isPrime . map (x-) . takeWhile (<x) $ tail primes
 
 numLength :: Double -> Integer
 numLength = floor . (+1) . logBase 10
+
+roots :: Floating a => a -> a -> a -> (a, a)
+roots a b c = (root (+) a b c, root (-) a b c)
+  where root (±) a b c = -b ± sqrt (b^2 - 4*a*c) / 2*a
 
 squareRoot :: Integral a => a -> a
 squareRoot = floor . sqrt . fromIntegral
