@@ -37,6 +37,6 @@ hackerrank = (>>) getLine
 
 terminal :: IO [Text]
 terminal = f []
-  where f xs = getLine >>= \x -> if x == "" 
-  	                               then return xs 
+  where f xs = getLine >>= \x -> if x == ""
+  	                               then return xs
   	                               else f (x:xs)

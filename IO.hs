@@ -29,7 +29,7 @@ hackerrank = (>>) getLine
 terminal :: IO [String]
 terminal = f []
   where f xs = getLine >>= \x -> if x == ""
-                                   then return xs 
+                                   then return xs
                                    else f (x:xs)
 
 terminalWith :: Show a => (String -> a) -> IO ()

@@ -5,7 +5,7 @@ import Data.List
 data Time = Time { hour   :: Integer
                  , minute :: Integer
                  , second :: Integer
-                } deriving (Eq) 
+                } deriving (Eq)
 
 instance Show Time where
     show = showTime . process
@@ -32,9 +32,9 @@ instance Ord Time where
 (+:::) t h = t + time h 0 0
 
 tmap :: (Integer -> Integer) -> Time -> Time
-tmap f t = Time (f $ hour t) (f $ minute t) (f $ second t) 
+tmap f t = Time (f $ hour t) (f $ minute t) (f $ second t)
 
-toTuple t = (hour t, minute t, second t) 
+toTuple t = (hour t, minute t, second t)
 fromTuple (h,m,s) = Time h m s
 
 process :: Time -> Time
@@ -48,5 +48,3 @@ showTime t = intercalate ":" . map (addZero . ($ t)) $ [hour, minute, second]
 addZero :: (Num a, Ord a, Show a) => a -> String
 addZero x | x < 10 = '0' : show x
           | otherwise = show x
-
-time = Time

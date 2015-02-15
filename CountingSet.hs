@@ -69,12 +69,12 @@ balance x c l r
       sizeX = sizeL + sizeR + 1
 
 rotateL :: a -> Size -> Count -> Set a -> Set a -> Set a
-rotateL x s c l r@(Tree _ _ _ ly ry) 
+rotateL x s c l r@(Tree _ _ _ ly ry)
     | size ly < ratio*size ry = singleL x s c l r
     | otherwise               = doubleL x s c l r
 
 rotateR :: a -> Size -> Count -> Set a -> Set a -> Set a
-rotateR x s c l@(Tree _ _ _ ly ry) r 
+rotateR x s c l@(Tree _ _ _ ly ry) r
     | size ry < ratio*size ly = singleR x s c l r
     | otherwise               = doubleR x s c l r
 
