@@ -1,4 +1,4 @@
-module Utils.IO where
+module IO where
 
 import Data.List.Split
 

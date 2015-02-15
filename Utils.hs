@@ -1,8 +1,5 @@
 module Utils where
 
---import Utils.IO
---import Utils.IO.Text
-
 import Control.Monad
 import Data.Default
 import Data.List
