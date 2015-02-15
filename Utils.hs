@@ -64,7 +64,7 @@ binaryList :: Decimal -> [Binary]
 binaryList = toBaseList 2
 
 binaryZeros :: Binary -> [Binary]
-binaryZeros n = replicate r 0 ++ (toBaseList 2) n
+binaryZeros n = replicate r 0 ++ toBaseList 2 n
     where r = 4 - length (toBaseList 2 n) `mod` 4
 
 binListToDec :: [Binary] -> Decimal
@@ -143,7 +143,8 @@ numberOfFactors = product . map (\x -> 1 + snd x) . primeFactorPairs
 
 showPrimeFactors :: Integer -> String
 showPrimeFactors = concat . shw . primeFactorPairs
-    where shw (x:xs) = concat (tail (sumPowers x) : map sumPowers xs)
+    where shw []     = []
+          shw (x:xs) = concat (tail (sumPowers x) : map sumPowers xs)
           sumPowers x = [" + ", show $ fst x, "^", show $ snd x]
 
 -- | Euler's totient function
@@ -215,6 +216,7 @@ removeDuplicates = map head . group . sort
 
 -- | Does not sort the list but as a drawback it runs in O(n^2).
 removeDuplicatesEq :: Eq a => [a] -> [a]
+removeDuplicatesEq []     = []
 removeDuplicatesEq (x:xs) = rem xs [x]
     where rem [] list     = list
           rem (x:xs) list | x `elem` list = rem xs list
@@ -232,7 +234,7 @@ slice from to = take (to - from + 1) . drop (from - 1)
 
 splitInto :: Int -> [a] -> [[a]]
 splitInto _ [] = []
-splitInto n xs = take n xs : (splitInto n $ drop n xs)
+splitInto n xs = take n xs : splitInto n (drop n xs)
 
 subset :: Eq a => [a] -> [a] -> Bool
 subset xs ys = all (`elem` ys) xs

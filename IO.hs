@@ -1,7 +1,5 @@
 module IO where
 
-import Data.List.Split
-
 printLines :: (Show a) => [a] -> IO()
 printLines = mapM_ print
 

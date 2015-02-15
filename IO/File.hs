@@ -1,13 +1,12 @@
 module IO.File where
 
 import System.IO
-import System.Environment
 import Data.List.Split
 
 -- | Reads from a file
 -- Returns single String of contents    -}
 open :: FilePath -> IO String
-open file = openFile file ReadMode >>= hGetContents >>= return
+open file = openFile file ReadMode >>= hGetContents
 
 -- | Reads from a file line by line
 -- Returns list of Strings

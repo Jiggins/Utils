@@ -48,3 +48,5 @@ showTime t = intercalate ":" . map (addZero . ($ t)) $ [hour, minute, second]
 addZero :: (Num a, Ord a, Show a) => a -> String
 addZero x | x < 10 = '0' : show x
           | otherwise = show x
+
+time = Time

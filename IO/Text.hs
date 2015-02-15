@@ -1,8 +1,6 @@
 {-#LANGUAGE OverloadedStrings #-}
 module IO.Text where
 
-import System.IO (openFile, IOMode (ReadMode))
-import System.Environment
 import Data.Text hiding (map)
 import Data.Text.IO
 import Prelude hiding (lines, words, putStrLn, getContents, getLine, readFile)
