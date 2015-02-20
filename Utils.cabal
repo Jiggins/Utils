@@ -2,7 +2,7 @@
 --  see http://haskell.org/cabal/users-guide/
 
 name:                  Utils
-version:               0.2.3.0
+version:               0.2.3.1
 synopsis:              General utility classes.
 
 description:           My collection of useful and common Haskell functions.
