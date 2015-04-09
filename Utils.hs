@@ -257,3 +257,4 @@ time f = do
     let diff = fromIntegral (end - start) / (10^12)
     printf "Computation time: %0.6f sec\n" (diff :: Double)
     return function
+

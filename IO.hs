@@ -14,17 +14,19 @@ getNumbers = getContents >>= return . map read . lines
 getMultiNums :: (Num a, Read a) => IO [[a]]
 getMultiNums = getContents >>= return . map (map read . words) . lines
 
-hackerrankLn :: IO String
-hackerrankLn = getLine >> getLine >>= return
-
-hackerrankList :: IO [String]
-hackerrankList = getLine >> getLines
-
-hackerrankListNum :: (Num a, Read a) => IO [a]
-hackerrankListNum = getLine >> getNumbers
-
+-- | Ignore first line of STDIN, Hackerrank usually uses this to tell us the
+--   number of lines of input, but Haskell rarely needs that.
 hackerrank :: IO a -> IO a
 hackerrank = (>>) getLine
+
+hackerrankLn :: IO String
+hackerrankLn = hackerrank getLine
+
+hackerrankList :: IO [String]
+hackerrankList = hackerrank getLines
+
+hackerrankListNum :: (Num a, Read a) => IO [a]
+hackerrankListNum = hackerrank getNumbers
 
 -- | Takes input from STDIN until a blank line is entered.  Returns an IO list
 terminal :: IO [String]
