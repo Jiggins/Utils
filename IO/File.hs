@@ -11,16 +11,16 @@ open file = openFile file ReadMode >>= hGetContents
 -- | Reads from a file line by line
 -- Returns list of Strings
 getLines :: FilePath -> IO [String]
-getLines file = open file >>= return . lines
+getLines = fmap lines . open
 
 getInts :: FilePath -> IO [Int]
-getInts file = open file >>= return . map read . words
+getInts = fmap (map read . words) . open
 
 getDoubles :: FilePath -> IO [Double]
-getDoubles file = open file >>= return . map read . words
+getDoubles = fmap (map read . words) . open
 
 readCSV :: FilePath -> IO [[String]]
-readCSV file = open file >>= return . map (splitOn ",") . lines
+readCSV = fmap (map (splitOn ",") . lines) . open
 
 getMultiNums :: (Num a, Read a) => FilePath -> IO [[a]]
-getMultiNums file = open file >>= return . map (map read . words) . lines
+getMultiNums = fmap (map (map read . words) . lines) . open
