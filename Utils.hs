@@ -1,5 +1,6 @@
 module Utils where
 
+import Control.Arrow ((&&&))
 import Control.Monad
 import Data.Default
 import Data.List
@@ -21,7 +22,7 @@ type Binary  = Integer
 
 infixr 9 .:
 
-apply :: (a -> b) -> (a, a) -> (b, b)
+-- apply :: (a -> b) -> (a, a) -> (b, b)
 apply f (a, b) = (f a, f b)
 
 --------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ apply f (a, b) = (f a, f b)
 {- * Numbers -}
 
 chose :: Integral a => a -> a -> a
-chose n r = factorial n `div` factorial r * factorial (n-r)
+chose n r = factorial n `div` factorial r * factorial (n - r)
 
 digitsSum :: Integral a => a -> a
 digitsSum 0 = 0
@@ -41,10 +42,10 @@ factorial n = product [1..n]
 
 goldbachConjecture :: Integer -> (Integer, Integer)
 goldbachConjecture x = (x - head con, head con)
-  where con = filter isPrime . map (x-) . takeWhile (<x) $ tail primes
+  where con = filter isPrime . map (x -) . takeWhile (< x) $ tail primes
 
 numLength :: Double -> Integer
-numLength = floor . (+1) . logBase 10
+numLength = floor . (1 +) . logBase 10
 
 roots :: Floating a => a -> a -> a -> (a, a)
 roots a b c = (root (+) a b c, root (-) a b c)
@@ -60,27 +61,21 @@ squareRoot = floor . sqrt . fromIntegral
 binary :: Decimal -> Binary
 binary = toBase 2
 
+toBase :: Decimal -> Integer -> Integer
+toBase = undigits .: toBaseList
+
 binaryList :: Decimal -> [Binary]
 binaryList = toBaseList 2
 
 binaryZeros :: Binary -> [Binary]
 binaryZeros n = replicate r 0 ++ toBaseList 2 n
-    where r = 4 - length (toBaseList 2 n) `mod` 4
-
-binListToDec :: [Binary] -> Decimal
-binListToDec [] = 0
-binListToDec (x:xs)
-    | x == 1 = 2 ^ length xs  + binListToDec xs
-    | x == 0 = binListToDec xs
+    where r = 4 - length (toBaseList 2 n) `mod` 5
 
 toDec :: Binary -> Decimal
-toDec = binListToDec . digits
-
-toBase :: Decimal -> Integer -> Integer
-toBase = undigits .: toBaseList
+toDec = undigitsBase 10 . digits
 
 toBaseList :: Integral a => a -> a -> [a]
-toBaseList base 0 = undefined
+toBaseList 0 _    = undefined
 toBaseList base n = reverse $ baseList n
     where baseList 0 = []
           baseList x = r : baseList q
@@ -102,6 +97,11 @@ collatz x
 
 fib :: [Integer]
 fib = 0 : 1 : zipWith (+) fib (tail fib)
+
+palindromesBelow :: (Integral b, Num a) => b -> a
+palindromesBelow n
+  | even n = 2 * (10 ^ (n `div` 2) - 1)
+  | odd  n = 11 * (10 ^ ((n - 1) `div` 2)) - 2
 
 triangleNumbers :: [Integer]
 triangleNumbers = zipWith ((`div` 2) .: (*)) [1..] [2..]
@@ -176,7 +176,10 @@ digits :: Integer -> [Integer]
 digits = toBaseList 10
 
 undigits :: Integral a => [a] -> a
-undigits = foldl' (\a b -> a * 10 + b) 0
+undigits = foldl' ((+) . (10 *)) 0
+
+undigitsBase :: Integral a => a -> [a] -> a
+undigitsBase n = foldl' (\a b -> a * n + b) 0
 
 --------------------------------------------------------------------------------
 
@@ -192,7 +195,7 @@ frequenciesEq (x:xs) = (x, 1 + count x xs) : frequenciesEq (remove x xs)
 
 -- | O(nlog(n))
 frequencies :: Ord a => [a] -> [(a,Int)]
-frequencies = map (\x -> (head x, length x)) . group . sort
+frequencies = map (head &&& length) . group . sort
 
 isAnagram :: Ord a => [a] -> [a] -> Bool
 isAnagram str xs = quicksort str == xs
@@ -223,11 +226,10 @@ removeDuplicatesEq (x:xs) = rem xs [x]
                           | otherwise = rem xs (list ++ [x])
 
 showDuplicates :: Ord a => [a] -> [a]
-showDuplicates = concat . filter (\x -> length x > 1) . group . sort
+showDuplicates = concat . filter ((> 1) . length) . group . sort
 
 showDuplicatePairs :: Ord a => [a] -> [(a,Int)]
-showDuplicatePairs = map (\x -> (head x, length x))
-    . filter (\x -> length x > 1) . group . sort
+showDuplicatePairs = map (head &&& length) . filter ((> 1) . length) . group . sort
 
 slice :: Int -> Int -> [a] -> [a]
 slice from to = take (to - from + 1) . drop (from - 1)

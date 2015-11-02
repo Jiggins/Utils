@@ -38,6 +38,13 @@ insert a (Tree x s c left right) = case compare a x of
     GT -> balance x c left (insert a right)
     EQ -> Tree x s (c+1) left right
 
+fromList :: Ord a => [a] -> Set a
+fromList = foldr insert Leaf
+
+toList :: Ord a => Set a -> [a]
+toList Leaf = []
+toList (Tree a _ _ l r) = a : toList l ++ toList r
+
 find :: Ord a => a -> Set a -> Maybe (Set a)
 find _ Leaf = Nothing
 find a set@(Tree x s c left right) = case a `compare` x of
