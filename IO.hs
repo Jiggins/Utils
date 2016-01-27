@@ -6,7 +6,7 @@ printLines = mapM_ print
 
 -- | Reads from STDIN, returns a list of Strings seperated by '\n'
 getLines :: IO [String]
-getLines = fmap lines getContents
+getLines = getContents >>= return . lines
 
 getNumbers :: (Num a, Read a) => IO [a]
 getNumbers = getContents >>= return . map read . lines
