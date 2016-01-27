@@ -5,6 +5,7 @@ import Control.Monad
 import Data.Default
 import Data.List
 import Data.List.Split
+import Data.Maybe
 import System.CPUTime
 import Text.Printf
 --import Text.Regex (mkRegex, subRegex)
@@ -22,7 +23,7 @@ type Binary  = Integer
 
 infixr 9 .:
 
--- apply :: (a -> b) -> (a, a) -> (b, b)
+apply :: (a -> b) -> (a, a) -> (b, b)
 apply f (a, b) = (f a, f b)
 
 --------------------------------------------------------------------------------
@@ -30,7 +31,7 @@ apply f (a, b) = (f a, f b)
 {- * Numbers -}
 
 chose :: Integral a => a -> a -> a
-chose n r = factorial n `div` factorial r * factorial (n - r)
+chose n r = factorial n `div` (factorial r * factorial (n - r))
 
 digitsSum :: Integral a => a -> a
 digitsSum 0 = 0
@@ -159,6 +160,9 @@ letterFrequency :: String -> [(Char,Int)]
 letterFrequency xs = [(x,c) | x <- ['.'..'z'],
     let c = length $ filter (x ==) xs, c > 0]
 
+readMany :: Read a => String -> [a]
+readMany = unfoldr $ listToMaybe . concatMap reads . tails
+
 splitOnLines :: String -> String
 splitOnLines = unlines . map (unlines . lines) . splitOn "\n\n"
 
@@ -185,8 +189,15 @@ undigitsBase n = foldl' (\a b -> a * n + b) 0
 
 {- * Lists -}
 
+butLast ::  Int -> [a] -> [a]
+butLast = (zipWith const <*>) . drop
+
 count :: (Eq a) => a -> [a] -> Int
 count x xs = length [y | y <- xs, y == x]
+
+-- | https://www.reddit.com/r/haskell/comments/3r75hq/blow_my_mind_in_one_line/cwlkjba
+consecutivePairs ::  [a] -> [(a, a)]
+consecutivePairs = ap zip tail
 
 -- | O(n^2) - does not need to be Ord - does not sort
 frequenciesEq :: Eq a => [a] -> [(a,Int)]
@@ -202,6 +213,10 @@ isAnagram str xs = quicksort str == xs
 
 isPalindrome :: Eq a => [a] -> Bool
 isPalindrome xs = xs == reverse xs
+
+-- | https://www.reddit.com/r/haskell/comments/3r75hq/blow_my_mind_in_one_line/cwmm027
+lastN ::  Int -> [a] -> [a]
+lastN n = foldl' (const . tail) <*> drop n
 
 powerSet :: [a] -> [[a]]
 powerSet = filterM (const [True, False])
